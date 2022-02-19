@@ -12,6 +12,7 @@ repositories {
     maven {
         url = uri('https://repo.maven.apache.org/maven2/')
     }
+    mavenCentral()
 }
 
 dependencies {
@@ -19,6 +20,8 @@ dependencies {
     implementation('org.springframework.boot:spring-boot-starter-data-jpa')
     implementation 'org.postgresql:postgresql:42.3.3'
     implementation 'org.projectlombok:lombok:1.18.22'
+    implementation 'javax.validation:validation-api:2.0.1.Final'
+
 
     runtimeOnly 'org.springframework.boot:spring-boot-devtools'
 
