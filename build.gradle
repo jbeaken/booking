@@ -1,56 +1,46 @@
 plugins {
-    id 'java'
-    id 'maven-publish'
     id 'org.springframework.boot' version '2.6.3'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
 }
 
-apply plugin: 'java'
-apply plugin: 'io.spring.dependency-management'
-
-repositories {
-    mavenLocal()
-    maven {
-        url = uri('https://repo.maven.apache.org/maven2/')
-    }
-    maven { url "https://repo.spring.io/snapshot" }
-    // for milestones
-    maven { url "https://repo.spring.io/milestone" }
-    // for GA versions
-    gradlePluginPortal()
-    mavenCentral()
-}
-
-dependencies {
-    implementation('org.springframework.boot:spring-boot-starter-web')
-    implementation('org.springframework.boot:spring-boot-starter-data-jpa')
-    implementation 'org.springframework.cloud:spring-cloud-starter-kubernetes-all:1.1.10.RELEASE'
-
-    implementation 'org.postgresql:postgresql:42.3.3'
-    implementation 'org.projectlombok:lombok:1.18.22'
-    implementation 'javax.validation:validation-api:2.0.1.Final'
-
-    runtimeOnly 'org.springframework.boot:spring-boot-devtools'
-
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-}
 
 group = 'org.party.festival'
 version = '0.0.1-SNAPSHOT'
 description = 'booking'
 java.sourceCompatibility = JavaVersion.VERSION_11
 
-publishing {
-    publications {
-        maven(MavenPublication) {
-            from(components.java)
-        }
+repositories {
+    mavenCentral()
+    maven { url 'https://repo.spring.io/milestone' }
+    maven { url 'https://repo.spring.io/snapshot' }
+}
+
+ext {
+    set('springCloudVersion', "2021.0.0")
+}
+
+dependencies {
+
+
+    implementation 'org.springframework.cloud:spring-cloud-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.cloud:spring-cloud-starter-kubernetes-fabric8-all'
+
+    implementation 'org.postgresql:postgresql:42.3.3'
+    implementation 'org.projectlombok:lombok:1.18.22'
+    implementation 'javax.validation:validation-api:2.0.1.Final'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
     }
 }
 
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-}
-
-test {
+tasks.named('test') {
     useJUnitPlatform()
 }
