@@ -1,0 +1,25 @@
+apiVersion: skaffold/v2beta21
+kind: Config
+metadata:
+  name: booking-service
+build:
+  artifacts:
+  - image: booking-service
+    context: .
+    buildpacks:
+      builder: gcr.io/buildpacks/builder:v1
+deploy:
+  kubectl:
+    manifests:
+    - k8s/manifests/booking-service.yaml
+
+  helm:
+    releases:
+      - name: postgres
+        remoteChart: bitnami/postgresql
+        setValues:
+          auth.username: festival
+          auth.password: cyclops
+          auth.database: festival
+          auth.postgresPassword: cyclops
+
