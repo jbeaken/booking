@@ -13,6 +13,9 @@ import javax.sql.DataSource;
 import java.util.List;
 
 
+/**
+ * @DataJpaTest seems unnecessary when using testcontainers, but hey ho
+ */
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class BookingRepositoryTest extends AbstractBookingTest {
