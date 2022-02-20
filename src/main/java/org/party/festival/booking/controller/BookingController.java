@@ -6,12 +6,10 @@ import org.party.festival.booking.exception.BookingNotFoundException;
 import org.party.festival.booking.repository.BookingRepository;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.stereotype.Controller;
-
 import java.util.List;
 
 @RequestMapping("/bookings")
-@Controller
+@RestController
 @Slf4j
 public class BookingController {
 
@@ -22,8 +20,8 @@ public class BookingController {
     }
 
 
-    @GetMapping(value = "/", consumes = "application/json", produces = "application/json")
-    public List<Booking> bookings() {
+    @GetMapping(value = "/")
+    public List<Booking> findAllBookings() {
         return bookingRepository.findAll();
     }
 

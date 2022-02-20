@@ -1,0 +1,11 @@
+embedded:
+  postgresql:
+    dockerImage: postgres:12-alpine
+    database: festival
+    user: festival
+    enabled: true
+    initScriptPath: data.sql
+spring:
+  cloud:
+    kubernetes:
+      enabled: false
