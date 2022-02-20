@@ -1,83 +1,59 @@
 package org.party.festival.booking.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.party.festival.booking.domain.Booking;
+import org.party.festival.booking.exception.BookingNotFoundException;
 import org.party.festival.booking.repository.BookingRepository;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequestMapping("/bookings")
 @Controller
+@Slf4j
 public class BookingController {
 
-    @Autowired
-    private BookingRepository bookingRepository;
+    private final BookingRepository bookingRepository;
 
-    protected static final Logger logger = LoggerFactory.getLogger(BookingController.class);
-
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String bookings(String actioned, Model model) {
-
-        logger.info("Received request for admin home, actioned : {}", actioned);
-
-        List<Booking> bookings = null;
-
-        if(actioned == null) {
-            actioned = "2";
-        }
-
-        if(actioned.equals("1")) {
-            bookings = bookingRepository.findAllByActioned( true );
-        } else if(actioned.equals("2")) {
-            bookings = bookingRepository.findAllByActioned( false );
-        } else {
-            bookings = bookingRepository.findAll();
-        }
-
-        logger.info("Retrieved {} bookings", bookings.size(), actioned);
-
-        model.addAttribute(bookings);
-        model.addAttribute("actioned", actioned);
-
-        return "admin/bookings.html";
+    public BookingController(BookingRepository bookingRepository) {
+        this.bookingRepository = bookingRepository;
     }
 
-    @RequestMapping(value = "/view/{id}", method = RequestMethod.GET)
-    public String view(@PathVariable Long id, Model model) {
 
-        Optional<Booking> booking = bookingRepository.findById(id);
-
-        logger.info("Request view booking {}", booking.get());
-
-        model.addAttribute( booking.get() );
-
-        return "admin/view.html";
+    @GetMapping(value = "/", consumes = "application/json", produces = "application/json")
+    public List<Booking> bookings() {
+        return bookingRepository.findAll();
     }
 
-    @RequestMapping(value = "/action/{isActioned}/{id}", method = RequestMethod.GET)
-    public String view(@PathVariable Boolean isActioned, @PathVariable Long id, Model model) {
-
-        logger.info("Request action booking {} {}", id, isActioned);
-
-        bookingRepository.updateIsActioned(id, isActioned);
-
-        return "redirect:/bookings/";
+    @GetMapping(value = "/{id}", consumes = "application/json", produces = "application/json")
+    public Booking booking(@PathVariable("id") Long id) {
+        return bookingRepository.findById(id).orElseThrow(() -> new BookingNotFoundException("Cannot find booking " + id));
     }
 
-    @RequestMapping(value = "/charts", method = RequestMethod.GET)
-    public String charts(Model model) {
+    @PostMapping(value = "/")
+    public Booking save(@RequestBody Booking booking) {
+        return bookingRepository.save(booking);
+    }
 
-        logger.info("Received request for admin charts");
+    @PutMapping(value = "/{id}")
+    public Booking edit(@RequestBody Booking booking, @PathVariable Long id) {
 
-        return "admin/charts.html";
+        return bookingRepository.findById(id)
+                .map(b -> {
+//                    b.setName(booking.getName());
+//                    b.setRole(booking.getRole());
+                    return bookingRepository.save(b);
+                })
+                .orElseGet(() -> {
+                    booking.setId(id);
+                    return bookingRepository.save(booking);
+                });
+    }
+
+    @DeleteMapping(value = "/{id}")
+    public void delete(@PathVariable Long id) {
+        bookingRepository.deleteById( id );
     }
 }

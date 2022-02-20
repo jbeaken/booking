@@ -21,7 +21,7 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- Name: booking; Type: TABLE; Schema: public; Owner: postgres
+-- Name: testGetAllBookings; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.booking (
@@ -87,7 +87,7 @@ ALTER SEQUENCE public.booking_id_seq OWNED BY public.booking.id;
 
 
 --
--- Name: booking id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: testGetAllBookings id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.booking ALTER COLUMN id SET DEFAULT nextval('public.booking_id_seq'::regclass);
@@ -100,7 +100,7 @@ SELECT pg_catalog.setval('public.booking_id_seq', 1, false);
 
 
 --
--- Name: booking booking_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: testGetAllBookings booking_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.booking
