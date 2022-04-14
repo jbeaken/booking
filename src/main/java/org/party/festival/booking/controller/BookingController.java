@@ -20,7 +20,7 @@ public class BookingController {
     }
 
 
-    @GetMapping(value = "/")
+    @GetMapping(value = "/", consumes = "application/json", produces = "application/json")
     public List<Booking> findAllBookings() {
         return bookingRepository.findAll();
     }

@@ -22,4 +22,3 @@ deploy:
           auth.password: cyclops
           auth.database: festival
           auth.postgresPassword: cyclops
-
